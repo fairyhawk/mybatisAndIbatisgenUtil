@@ -3,7 +3,7 @@ package ${packageName}.dao.impl.${mypackageName};
 import java.util.List;
 import ${packageName}.entity.${mypackageName}.${voClassName};
 import ${packageName}.dao.${mypackageName}.${voClassName}Dao;
-
+import org.springframework.stereotype.Repository;
 import com.supergenius.sns.dao.impl.common.GenericDaoImpl;
 
 /**
@@ -12,6 +12,7 @@ import com.supergenius.sns.dao.impl.common.GenericDaoImpl;
  * User: qinggang.liu bis@foxmail.com
  * Date: ${date?string("yyyy-MM-dd")}
  */
+ @Repository("${parmString}Dao")
 public class ${voClassName}DaoImpl extends GenericDaoImpl implements ${voClassName}Dao{
 
     public <#if keys?size == 0 >void<#else><#list columnList as column><#if column.key>${column.returnType}</#if></#list></#if> add${voClassName}(${voClassName} ${parmString}) {
