@@ -53,8 +53,8 @@
         <property name="packageName" value="com\supergenius\sns"/><!--生成的java文件的包名-->
         <property name="ibatisFileDir" value="mybatis"/><!--生成的ibatis文件的目录-->
         <property name="springFileDir" value="config\spring"/><!--生成的spring文件的目录-->
-        <property name="destDir" value="D:\workspaces\mybatisgenutil\src\test\java"/><!--生成的文件的总目录-->
-        <property name="templateDir" value="D:\workspaces\mybatisgenutil\src\main\resources\ftl\mybatis"/><!--freemarker模板文件的目录-->
+        <property name="destDir" value="E:\GitHub\mybatisAndIbatisgenUtil\src\test\java"/><!--生成的文件的总目录-->
+        <property name="templateDir" value="E:\GitHub\mybatisAndIbatisgenUtil\src\main\resources\ftl\mybatis"/><!--freemarker模板文件的目录-->
         <property name="preOrSu" value="0"/><!--表名称是否有加前后缀，-1：前缀，0：无前后缀，1：后缀，2：前后缀-->
         <property name="separator" value="_"/><!--分隔符-->
     </bean>

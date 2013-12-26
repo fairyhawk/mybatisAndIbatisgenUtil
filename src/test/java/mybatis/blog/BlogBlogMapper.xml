@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<sqlMap namespace="BlogBlogMapper">
+
+        <resultMap id="BlogBlogResult" type="BlogBlog">
+            <result property="id" column="id"/>
+            <result property="cusId" column="cus_id"/>
+            <result property="content" column="content"/>
+            <result property="type" column="type"/>
+            <result property="status" column="status"/>
+            <result property="viewcount" column="viewcount"/>
+            <result property="replycount" column="replycount"/>
+            <result property="isbest" column="isbest"/>
+            <result property="activity" column="activity"/>
+            <result property="addtime" column="addtime"/>
+        </resultMap>
+
+        <sql id="blog_blog_columns">
+            blog_blog.id,
+            blog_blog.cus_id,
+            blog_blog.content,
+            blog_blog.type,
+            blog_blog.status,
+            blog_blog.viewcount,
+            blog_blog.replycount,
+            blog_blog.isbest,
+            blog_blog.activity,
+            blog_blog.addtime
+        </sql>
+
+        <sql id="blog_blog_properties">
+            #{id},
+            #{cusId},
+            #{content},
+            #{type},
+            #{status},
+            #{viewcount},
+            #{replycount},
+            #{isbest},
+            #{activity},
+            #{addtime}
+        </sql>
+
+        <insert id="createBlogBlog" parameterType="BlogBlog" keyColumn="id" keyProperty="id">
+            insert INTO blog_blog (<include refid="blog_blog_columns"/>) VALUES (<include refid="blog_blog_properties"/>)
+        </insert>
+
+        <delete id="deleteBlogBlogById" parameterType="int">
+            delete from blog_blog
+            where
+                id = #{value}
+
+
+
+
+
+
+
+
+
+        </delete>
+
+        <update id="updateBlogBlog" parameterType="BlogBlog">
+            update blog_blog SET
+                id = #{id},
+                cus_id = #{cusId},
+                content = #{content},
+                type = #{type},
+                status = #{status},
+                viewcount = #{viewcount},
+                replycount = #{replycount},
+                isbest = #{isbest},
+                activity = #{activity},
+                addtime = #{addtime}
+            where
+                id = #{id}
+
+
+
+
+
+
+
+
+
+        </update>
+
+        <select id="getBlogBlogById" resultMap="BlogBlogResult" parameterType="int">
+            select
+            <include refid="blog_blog_columns"/>
+            from blog_blog
+            where
+                id = #value#
+
+
+
+
+
+
+
+
+
+        </select>
+		
+        <select id="getBlogBlogList" resultMap="BlogBlogResult" parameterType="QueryBlogBlogCondition">
+            select
+            <include refid="blog_blog_columns"/>
+            from blog_blog
+        </select>
+        
+</sqlMap>

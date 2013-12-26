@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<sqlMap namespace="SugSuggestRecommendMapper">
+
+        <resultMap id="SugSuggestRecommendResult" type="SugSuggestRecommend">
+            <result property="id" column="id"/>
+            <result property="cusId" column="cus_id"/>
+            <result property="suggestId" column="suggest_id"/>
+            <result property="type" column="type"/>
+            <result property="score" column="score"/>
+            <result property="addtime" column="addtime"/>
+        </resultMap>
+
+        <sql id="sug_suggest_recommend_columns">
+            sug_suggest_recommend.id,
+            sug_suggest_recommend.cus_id,
+            sug_suggest_recommend.suggest_id,
+            sug_suggest_recommend.type,
+            sug_suggest_recommend.score,
+            sug_suggest_recommend.addtime
+        </sql>
+
+        <sql id="sug_suggest_recommend_properties">
+            #{id},
+            #{cusId},
+            #{suggestId},
+            #{type},
+            #{score},
+            #{addtime}
+        </sql>
+
+        <insert id="createSugSuggestRecommend" parameterType="SugSuggestRecommend" keyColumn="id" keyProperty="id">
+            insert INTO sug_suggest_recommend (<include refid="sug_suggest_recommend_columns"/>) VALUES (<include refid="sug_suggest_recommend_properties"/>)
+        </insert>
+
+        <delete id="deleteSugSuggestRecommendById" parameterType="int">
+            delete from sug_suggest_recommend
+            where
+                id = #{value}
+
+
+
+
+
+        </delete>
+
+        <update id="updateSugSuggestRecommend" parameterType="SugSuggestRecommend">
+            update sug_suggest_recommend SET
+                id = #{id},
+                cus_id = #{cusId},
+                suggest_id = #{suggestId},
+                type = #{type},
+                score = #{score},
+                addtime = #{addtime}
+            where
+                id = #{id}
+
+
+
+
+
+        </update>
+
+        <select id="getSugSuggestRecommendById" resultMap="SugSuggestRecommendResult" parameterType="int">
+            select
+            <include refid="sug_suggest_recommend_columns"/>
+            from sug_suggest_recommend
+            where
+                id = #value#
+
+
+
+
+
+        </select>
+		
+        <select id="getSugSuggestRecommendList" resultMap="SugSuggestRecommendResult" parameterType="QuerySugSuggestRecommendCondition">
+            select
+            <include refid="sug_suggest_recommend_columns"/>
+            from sug_suggest_recommend
+        </select>
+        
+</sqlMap>
