@@ -7,7 +7,7 @@
 <sqlMap namespace="${voClassName}_NS">
         <!--table:${tableName}-->
         <typeAlias alias="${voClassName}" type="${packageName}.domain.${voClassName}"/>
-        <typeAlias alias="Query${voClassName}Condition" type="${packageName}.condition.Query${voClassName}Condition"/>
+        
 
         <resultMap id="${voClassName}Result" class="${voClassName}">
             <#list columnList as column>
@@ -69,7 +69,7 @@
             </#if>
         </select>
 
-        <select id="get${voClassName}List" resultMap="${voClassName}_NS.${voClassName}Result" parameterClass="Query${voClassName}Condition">
+        <select id="get${voClassName}List" resultMap="${voClassName}_NS.${voClassName}Result" parameterClass="${voClassName}">
             SELECT
             <include refid="${voClassName}_NS.${tableName}_columns"/>
             FROM ${tableName}
