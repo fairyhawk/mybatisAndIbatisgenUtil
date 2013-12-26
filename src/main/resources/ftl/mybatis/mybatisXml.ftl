@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <#assign one = 1>
-<sqlMap namespace="${voClassName}Mapper">
+<mapper namespace="${voClassName}Mapper">
 
         <resultMap id="${voClassName}Result" type="${voClassName}">
             <#list columnList as column>
@@ -58,10 +58,10 @@
             </#if>
         </select>
 		
-        <select id="get${voClassName}List" resultMap="${voClassName}Result" parameterType="Query${voClassName}Condition">
+        <select id="get${voClassName}List" resultMap="${voClassName}Result" parameterType="${voClassName}">
             select
             <include refid="${tableName}_columns"/>
             from ${tableName}
         </select>
         
-</sqlMap>
+</mapper>
