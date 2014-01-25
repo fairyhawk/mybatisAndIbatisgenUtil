@@ -22,7 +22,7 @@
             </#list>
         </sql>
 
-        <insert id="create${voClassName}" parameterType="${voClassName}" keyColumn="id" keyProperty="id">
+        <insert id="create${voClassName}" parameterType="${voClassName}" keyColumn="id" keyProperty="id" useGeneratedKeys="true" >
             insert INTO ${tableName} (<include refid="${tableName}_columns"/>) VALUES (<include refid="${tableName}_properties"/>)
         </insert>
 
