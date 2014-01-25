@@ -17,23 +17,6 @@
 	</properties>
 	 
 	<repositories>
-		 <!--  <repository>
-		  	<id>nexus</id> 
-		  	<name>Team Nexus Repository</name> 
-			<url>http://192.168.1.10:8025/content/groups/public/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>  
-		<repository>
-		  	<id>nexus3d</id> 
-		  	<name>Team Nexus Repository 3d </name> 
-			<url>http://192.168.1.10:8025/content/repositories/thirdparty/</url>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots> 
-		</repository>
-			 -->
 		 <repository>
 			<id>central</id>
 			<name>Central Repository</name>
@@ -43,15 +26,6 @@
 			</snapshots>
 		</repository> 
 	</repositories>
-	<!-- 
-	<pluginRepositories>  
-        <pluginRepository>  
-            <id>public</id>  
-            <name>Public Repositories</name>  
-            <url>http://192.168.1.10:8025/content/groups/public/</url>  
-        </pluginRepository>  
-    </pluginRepositories>   -->
-    
 	
 	<build>
 		<finalName>mybatisgenutil</finalName>
@@ -182,6 +156,17 @@
 			</dependency>
 	        <!-- GENERAL UTILS end -->
 	
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis</artifactId>
+				<version>${mybatis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mybatis</groupId>
+				<artifactId>mybatis-spring</artifactId>
+				<version>1.2.1</version>
+			</dependency>
+			
 	</dependencies>
 
 

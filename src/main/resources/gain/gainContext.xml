@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd" default-autowire="byName">
+    <bean id="dataSource"
+          class="org.apache.commons.dbcp.BasicDataSource"
+          destroy-method="close">
+        <property name="driverClassName">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="url">
+            <value>jdbc:mysql://127.0.0.1/test?useUnicode=true&amp;characterEncoding=UTF-8</value>
+        </property>
+        <property name="username">
+            <value>root</value>
+        </property>
+        <property name="password">
+            <value>root</value>
+        </property>
+        <property name="maxActive">
+            <value>100</value>
+        </property>
+        <property name="initialSize">
+            <value>30</value>
+        </property>
+    </bean>
+
+    <!--将不同的表放入不同的命名空间，如果不包含在里面的表，则全部归入一个default的命名空间-->
+    <bean id="tableNSMap" class="java.util.HashMap">
+        <constructor-arg>
+            <map>
+                <entry key="userprofile">
+                      <list>
+						<value>USER_PROFILE</value>
+                    </list>
+                </entry>
+                <!--   <entry key="suggest">
+                      <list>
+						<value>SUG_SUGGEST</value>
+						<value>SUG_SUGGEST_RECOMMEND</value>
+						<value>SUG_SUGGEST_REPLY</value>
+                    </list>
+                </entry> -->
+            </map>
+        </constructor-arg>
+    </bean>
+    
+    <bean id="myBatisGenService" class="com.yizhilu.os.core.gain.MybatisGenService">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="tableNSMap" ref="tableNSMap"/>
+        <property name="packageName" value="com\yizhilu\os\user"/><!--生成的java文件的包名-->
+        <property name="ibatisFileDir" value="mybatis"/><!--生成的ibatis文件的目录-->
+        <property name="springFileDir" value="config\spring"/><!--生成的spring文件的目录-->
+        <property name="destDir" value="E:\gitwork\mybatisAndIbatisgenUtil\src\test\java"/><!--生成的文件的总目录-->
+        <property name="templateDir" value="E:\gitwork\mybatisAndIbatisgenUtil\src\main\resources\gain\ftl\mybatis"/><!--freemarker模板文件的目录-->
+        <property name="preOrSu" value="0"/><!--表名称是否有加前后缀，-1：前缀，0：无前后缀，1：后缀，2：前后缀-->
+        <property name="separator" value="_"/><!--分隔符-->
+    </bean>
+    
+    <bean id="iBatisGenService" class="com.yizhilu.os.core.gain.IbatisGenService">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="tableNSMap" ref="tableNSMap"/>
+        <property name="packageName" value="com\supergenius\sns"/><!--生成的java文件的包名-->
+        <property name="ibatisFileDir" value="config"/><!--生成的ibatis文件的目录-->
+        <property name="springFileDir" value="config\spring"/><!--生成的spring文件的目录-->
+        <property name="destDir" value="E:\workspace\ibatisMybatisGenGenUtil\dest"/><!--生成的文件的总目录-->
+        <property name="templateDir" value="D:\workspaces\mybatisgenutil\src\main\resources\ftl\ibatis"/><!--freemarker模板文件的目录-->
+        <property name="preOrSu" value="0"/><!--表名称是否有加前后缀，-1：前缀，0：无前后缀，1：后缀，2：前后缀-->
+        <property name="separator" value="_"/><!--分隔符-->
+    </bean>
+    
+    
+</beans>
