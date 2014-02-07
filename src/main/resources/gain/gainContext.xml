@@ -9,7 +9,7 @@
             <value>com.mysql.jdbc.Driver</value>
         </property>
         <property name="url">
-            <value>jdbc:mysql://127.0.0.1/test?useUnicode=true&amp;characterEncoding=UTF-8</value>
+            <value>jdbc:mysql://127.0.0.7/test?useUnicode=true&amp;characterEncoding=UTF-8</value>
         </property>
         <property name="username">
             <value>root</value>
@@ -18,10 +18,10 @@
             <value>root</value>
         </property>
         <property name="maxActive">
-            <value>100</value>
+            <value>10</value>
         </property>
         <property name="initialSize">
-            <value>30</value>
+            <value>3</value>
         </property>
     </bean>
 
@@ -29,9 +29,11 @@
     <bean id="tableNSMap" class="java.util.HashMap">
         <constructor-arg>
             <map>
-                <entry key="userprofile">
+                <entry key="api">
                       <list>
-						<value>USER_PROFILE</value>
+						<value>FINANCE</value>
+						<value>PKSCHEDULE</value>
+						<value>VIDEO</value>
                     </list>
                 </entry>
                 <!--   <entry key="suggest">
@@ -48,11 +50,8 @@
     <bean id="myBatisGenService" class="com.yizhilu.os.core.gain.MybatisGenService">
         <property name="dataSource" ref="dataSource"/>
         <property name="tableNSMap" ref="tableNSMap"/>
-        <property name="packageName" value="com\yizhilu\os\user"/><!--生成的java文件的包名-->
+        <property name="packageName" value="com\supergenius\sns"/><!--生成的java文件的包名-->
         <property name="ibatisFileDir" value="mybatis"/><!--生成的ibatis文件的目录-->
-        <property name="springFileDir" value="config\spring"/><!--生成的spring文件的目录-->
-        <property name="destDir" value="E:\gitwork\mybatisAndIbatisgenUtil\src\test\java"/><!--生成的文件的总目录-->
-        <property name="templateDir" value="E:\gitwork\mybatisAndIbatisgenUtil\src\main\resources\gain\ftl\mybatis"/><!--freemarker模板文件的目录-->
         <property name="preOrSu" value="0"/><!--表名称是否有加前后缀，-1：前缀，0：无前后缀，1：后缀，2：前后缀-->
         <property name="separator" value="_"/><!--分隔符-->
     </bean>

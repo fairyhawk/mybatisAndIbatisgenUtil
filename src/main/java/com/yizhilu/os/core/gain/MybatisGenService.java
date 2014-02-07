@@ -1,19 +1,28 @@
 package com.yizhilu.os.core.gain;
 
-import org.springframework.jdbc.core.support.JdbcDaoSupport;
-
-import java.sql.*;
-import java.util.List;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.io.*;
 
 import lombok.Getter;
 import lombok.Setter;
 
-import freemarker.template.Template;
+import org.springframework.jdbc.core.support.JdbcDaoSupport;
+
 import freemarker.template.Configuration;
 import freemarker.template.DefaultObjectWrapper;
+import freemarker.template.Template;
 
 public class MybatisGenService extends JdbcDaoSupport {
     @Getter
@@ -27,13 +36,10 @@ public class MybatisGenService extends JdbcDaoSupport {
     private String ibatisFileDir;
     @Getter
     @Setter
-    private String springFileDir;
+    private static String destDir;
     @Getter
     @Setter
-    private String destDir;
-    @Getter
-    @Setter
-    private String templateDir;
+    private static String templateDir;
     @Getter
     @Setter
     private int preOrSu;
@@ -43,6 +49,18 @@ public class MybatisGenService extends JdbcDaoSupport {
     @Getter
     @Setter
     private List<NameSpaceVO> nsvoList;
+    static {
+        try {
+            File directory = new File("");// 参数为空
+            // 项目路径
+            String courseFile = directory.getCanonicalPath();
+            // 模版路径
+            templateDir = courseFile + "\\src\\main\\resources\\gain\\ftl\\mybatis";
+            destDir = courseFile + "\\src\\test\\java";
+        } catch (IOException e) {
+        }
+
+    }
 
     public void gen() throws Exception {
         List<TableVO> tableList = new ArrayList<TableVO>();
@@ -118,7 +136,7 @@ public class MybatisGenService extends JdbcDaoSupport {
                 rsExtKey.close();
         }
         List<NameSpaceVO> nameSpaceVOList = inNSMap(tableList);
-        
+
         genMybatisXmlFile(nameSpaceVOList);
         genJavaBeanClassFile(nameSpaceVOList);
 
@@ -133,12 +151,11 @@ public class MybatisGenService extends JdbcDaoSupport {
     public void genMybatisXmlFile(List<NameSpaceVO> nameSpaceVOList) throws Exception {
         Configuration cfg = new Configuration();
         cfg.setDefaultEncoding("UTF-8");
-        System.out.println("++++templateDir:"+templateDir);
-        File templateDirdd =new File(templateDir);
+        File templateDirdd = new File(templateDir);
         if (!templateDirdd.exists()) {
             templateDirdd.mkdirs();
         }
-        
+
         cfg.setDirectoryForTemplateLoading(templateDirdd);
         cfg.setObjectWrapper(new DefaultObjectWrapper());
 
@@ -148,20 +165,21 @@ public class MybatisGenService extends JdbcDaoSupport {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
 
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + ibatisFileDir
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + ibatisFileDir
                             + File.separator;
-                }else{
-                    entityPackDir=destDir + File.separator + ibatisFileDir
-                            + File.separator +nameSpaceVO.getName();
+                } else {
+                    entityPackDir = destDir + File.separator + ibatisFileDir
+                            + File.separator + nameSpaceVO.getName();
                 }
-                File configFileDir=new File(entityPackDir);
+                File configFileDir = new File(entityPackDir);
                 if (!configFileDir.exists()) {
                     configFileDir.mkdirs();
                 }
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + "Mapper.xml";
-                
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + "Mapper.xml";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
                 template.process(tableVO, out);
@@ -188,21 +206,23 @@ public class MybatisGenService extends JdbcDaoSupport {
         for (NameSpaceVO nameSpaceVO : nameSpaceVOList) {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + packageName
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + packageName
                             + File.separator + "entity";
-                }else{
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "entity"+File.separator+nameSpaceVO.getName();
+                } else {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "entity" + File.separator
+                            + nameSpaceVO.getName();
                 }
-                voPackageDir=new File(entityPackDir);
+                voPackageDir = new File(entityPackDir);
                 if (!voPackageDir.exists()) {
                     voPackageDir.mkdirs();
                 }
-                
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + ".java";
-                
+
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + ".java";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "UTF-8");
                 template.process(tableVO, out);
@@ -231,22 +251,24 @@ public class MybatisGenService extends JdbcDaoSupport {
         for (NameSpaceVO nameSpaceVO : nameSpaceVOList) {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
-                
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + packageName
+
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + packageName
                             + File.separator + "service";
-                }else{
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "service"+File.separator+nameSpaceVO.getName();
+                } else {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "service" + File.separator
+                            + nameSpaceVO.getName();
                 }
-                voPackageDir=new File(entityPackDir);
+                voPackageDir = new File(entityPackDir);
                 if (!voPackageDir.exists()) {
                     voPackageDir.mkdirs();
                 }
-                
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + "Service.java";
-                
+
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + "Service.java";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
                 template.process(tableVO, out);
@@ -274,21 +296,23 @@ public class MybatisGenService extends JdbcDaoSupport {
         for (NameSpaceVO nameSpaceVO : nameSpaceVOList) {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "service"+ File.separator + "impl";
-                }else{
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "service"+ File.separator + "impl"+File.separator+nameSpaceVO.getName();
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "service" + File.separator + "impl";
+                } else {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "service" + File.separator + "impl"
+                            + File.separator + nameSpaceVO.getName();
                 }
-                voPackageDir=new File(entityPackDir);
+                voPackageDir = new File(entityPackDir);
                 if (!voPackageDir.exists()) {
                     voPackageDir.mkdirs();
                 }
-                
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + "ServiceImpl.java";
-                
+
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + "ServiceImpl.java";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
                 template.process(tableVO, out);
@@ -316,22 +340,24 @@ public class MybatisGenService extends JdbcDaoSupport {
         for (NameSpaceVO nameSpaceVO : nameSpaceVOList) {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
-                
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + packageName
+
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + packageName
                             + File.separator + "dao";
-                }else{
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "dao"+File.separator+nameSpaceVO.getName();
+                } else {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "dao" + File.separator
+                            + nameSpaceVO.getName();
                 }
-                voPackageDir=new File(entityPackDir);
+                voPackageDir = new File(entityPackDir);
                 if (!voPackageDir.exists()) {
                     voPackageDir.mkdirs();
                 }
-                
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + "Dao.java";
-                
+
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + "Dao.java";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
                 template.process(tableVO, out);
@@ -360,21 +386,23 @@ public class MybatisGenService extends JdbcDaoSupport {
             for (TableVO tableVO : nameSpaceVO.getTableList()) {
                 tableVO.setPackageName(packageName.replaceAll("\\\\", "."));
 
-                String entityPackDir="";
-                if("defalut".equalsIgnoreCase(nameSpaceVO.getName())){
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "dao"+ File.separator + "impl";
-                }else{
-                    entityPackDir=destDir + File.separator + packageName
-                            + File.separator + "dao"+ File.separator + "impl"+File.separator+nameSpaceVO.getName();
+                String entityPackDir = "";
+                if ("defalut".equalsIgnoreCase(nameSpaceVO.getName())) {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "dao" + File.separator + "impl";
+                } else {
+                    entityPackDir = destDir + File.separator + packageName
+                            + File.separator + "dao" + File.separator + "impl"
+                            + File.separator + nameSpaceVO.getName();
                 }
-                voPackageDir=new File(entityPackDir);
+                voPackageDir = new File(entityPackDir);
                 if (!voPackageDir.exists()) {
                     voPackageDir.mkdirs();
                 }
-                
-                String filePath = entityPackDir + File.separator + tableVO.getVoClassName() + "DaoImpl.java";
-                
+
+                String filePath = entityPackDir + File.separator
+                        + tableVO.getVoClassName() + "DaoImpl.java";
+
                 File file = new File(filePath);
                 Writer out = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
                 template.process(tableVO, out);
@@ -390,7 +418,8 @@ public class MybatisGenService extends JdbcDaoSupport {
             NameSpaceVO nameSpaceVO = new NameSpaceVO();
             nameSpaceVO.setName(nameSpaceName);
             for (TableVO tableVO : tableList) {
-                if (tableNSMap.get(nameSpaceName).contains(tableVO.getTableName().toUpperCase())) {
+                if (tableNSMap.get(nameSpaceName).contains(
+                        tableVO.getTableName().toUpperCase())) {
                     tableVO.setMypackageName(nameSpaceName);
                     nameSpaceVO.getTableList().add(tableVO);
                 }
@@ -399,7 +428,8 @@ public class MybatisGenService extends JdbcDaoSupport {
         }
         for (String nameSpaceName : tableNSMap.keySet()) {
             for (TableVO tableVO : tableList) {
-                if (tableNSMap.get(nameSpaceName).contains(tableVO.getTableName().toUpperCase())) {
+                if (tableNSMap.get(nameSpaceName).contains(
+                        tableVO.getTableName().toUpperCase())) {
                     if (defaultTalbeVOList.contains(tableVO)) {
                         defaultTalbeVOList.remove(tableVO);
                     }
@@ -408,12 +438,12 @@ public class MybatisGenService extends JdbcDaoSupport {
                 }
             }
         }
-       /* if (defaultTalbeVOList.size() > 0) {
-            NameSpaceVO nameSpaceVO = new NameSpaceVO();
-            nameSpaceVO.setName("default");
-            nameSpaceVO.setTableList(defaultTalbeVOList);
-            nameSpaceVOList.add(nameSpaceVO);
-        }*/
+        /*
+         * if (defaultTalbeVOList.size() > 0) { NameSpaceVO nameSpaceVO = new
+         * NameSpaceVO(); nameSpaceVO.setName("default");
+         * nameSpaceVO.setTableList(defaultTalbeVOList);
+         * nameSpaceVOList.add(nameSpaceVO); }
+         */
 
         return nameSpaceVOList;
     }
