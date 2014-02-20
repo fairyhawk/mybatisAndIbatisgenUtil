@@ -53,7 +53,7 @@
             from ${tableName}
             <#if keys?size!=0>
             where<#assign i=0>
-                <#list columnList as column><#if column.key><#assign i=i+1><#if (i>1)> AND </#if>${column.columnName} = #<#if keys?size != 1>${column.propertyName}<#else>value</#if>#</#if>
+                <#list columnList as column><#if column.key><#assign i=i+1><#if (i>1)> AND </#if>${column.columnName} = #${"{"}<#if keys?size != 1>${column.propertyName}<#else>value</#if>${"}"}</#if>
                 </#list>
             </#if>
         </select>
