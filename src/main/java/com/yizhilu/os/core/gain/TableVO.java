@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.mybatis.generator.internal.util.StringUtility;
+import org.springframework.util.StringUtils;
+
 public class TableVO {
     private String tableName;
     private String packageName;// 统一的包
@@ -53,8 +56,11 @@ public class TableVO {
         String[] tn_split = tn.split(separator);
         StringBuffer sbClassName = new StringBuffer();
         for (String tn_sub : tn_split) {
-            sbClassName.append(tn_sub.substring(0, 1).toUpperCase()).append(
-                    tn_sub.substring(1));
+            if(!StringUtils.isEmpty(tn_sub)){
+                sbClassName.append(tn_sub.substring(0, 1).toUpperCase()).append(
+                        tn_sub.substring(1));
+            }
+            
         }
         return sbClassName.toString();
     }
